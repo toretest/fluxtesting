@@ -12,6 +12,7 @@ import reactor.kotlin.core.publisher.toMono
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.random.Random
 
 
 @RestController
@@ -27,39 +28,16 @@ class RestApi {
      */
     @GetMapping("/stream")
     fun streamEvents(): Flux<ServerSentEvent<HelloMessage>> {
-        /*
-    }
-       return generateData()
+        return Flux.interval(Duration.ofMillis(40))
          .map { sequence: Long ->
-                ServerSentEvent.builder<HelloMessage>()
+                ServerSentEvent
+                    .builder<HelloMessage>()
                     .id(sequence.toString())
-                    .event("periodic-event")
-                    .data(HelloMessage())
-                    .build()*/
-
-        return Flux.interval(Duration.ofMillis(50))
-         .map { sequence: Long ->
-                ServerSentEvent.builder<HelloMessage>()
-                    .id(sequence.toString())
-                    .event("periodic-event")
+                    .event("Price-event")
                     .data(HelloMessage())
                     .build()
             }
-
-
     }
-}
-
-/**
- * Generate some data
- */
-fun generateData(): Flux<HelloMessage> {
-    val antall = (10..2000).random()
-    val data = mutableListOf<HelloMessage>()
-    for (i in 1..antall) {
-        data.add(HelloMessage())
-    }
-    return Mono.just(data.toList()).flatMapIterable { iter -> iter }
 }
 
 /**
@@ -67,7 +45,8 @@ fun generateData(): Flux<HelloMessage> {
  */
 data class HelloMessage(
     val id: String = UUID.randomUUID().toString(),
-    val name: String = "Hello_$id".toString(),
+    val value : Int = (1 .. 10).random(),
+    val name: String = "Pris",
     val timestamp: LocalDateTime = LocalDateTime.now()
 )
 
